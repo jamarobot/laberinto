@@ -31,7 +31,9 @@ class Celda {
     void setTipo(int tipo_) { this->tipo = tipo_; }
     Celda(int y_, int x_, int tipo_);
     Celda();
-
+    void setParent(Celda* parent_) { this->parent = parent_; }
     void propagate(list<Celda>* posibles, Celda* maze[WIDTH][HEIGHT]);
-    bool isFree();
+    bool isFree() { return (this->status == FREE); };
+    bool isGoal() { return (this->status == GOAL); }
+    void searchBackwards(list<Point>* path);
 };

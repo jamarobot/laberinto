@@ -2,16 +2,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
-//#include "Celda.cpp"
+#include <list>
 const int WIDTH = 5;
 const int HEIGHT = 5;
+bool found = false;
+#include "Point.h"
+std::list<Point> path;
 #include <bitset>
-#include <list>
 #include "Celda.cpp"
 
-extern Celda*** c;
 using namespace std;
 Celda* maze[WIDTH][HEIGHT];
+
 int main(int n, char** args) {
     int plantilla[WIDTH][HEIGHT] = {{13, 1, 5, 5, 3},
                                     {9, 6, 9, 5, 2},
@@ -33,13 +35,19 @@ int main(int n, char** args) {
         }
         cout << endl;
     }
-    Celda** inicio = &maze[1][1];
 
-    (**inicio).propagate(&posibles, maze);
+    Celda** goal = &maze[4][3];
+    (*goal)->setStatus(GOAL);
+
+    Celda** inicio = &maze[1][1];
+    (*inicio)->setStatus(BEGIN);
+    (*inicio)->propagate(&posibles, maze);
+
     // cout << sizeof(maze[0]) / sizeof(maze[0][0]) << endl;
 
-    while (!posibles.empty()) {
-        cout << (posibles.front()).getTipo();
+    while (!posibles.empty() && !found) {
+        // cout << (posibles.front()).getTipo();
+        (posibles.front()).propagate(&posibles, maze);
         posibles.pop_front();
     }
 
