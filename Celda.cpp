@@ -1,7 +1,10 @@
 #include "Celda.h"
 #include <bitset>
+
 extern const int WIDTH;
 extern const int HEIGHT;
+extern bool found;
+extern list<Point> path;
 
 Celda::Celda(int y_, int x_, int tipo_) {
     y = y_;
@@ -53,10 +56,20 @@ void Celda::propagate(list<Celda>* posibles, Celda* maze[WIDTH][HEIGHT]) {
 
 void Celda::registrar(Celda child, list<Celda>* posibles) {
     if (child.isFree()) {
-        std::cout << "entro aqui";
         (*posibles).push_back(child);
+        child.setParent(this);
         child.setStatus(SEARCHED);
+    } else if (child.isGoal()) {
+        cout << "premio";
+        child.setParent(this);
+        found = true;
+        child.searchBackwards(&path);
     }
 }
-
-bool Celda::isFree() { return (this->status == 0); }
+void Celda::searchBackwards(list<Point>* path) {
+    // int cords[] = {x, y};
+    //(*path).push_back(&cords);
+    if (this->parent != NULL) {
+        this->parent->searchBackwards(&*path);
+    }
+}
