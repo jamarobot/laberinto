@@ -14,27 +14,13 @@ Celda::Celda(int y_, int x_, int tipo_) {
     std::string binary = std::bitset<4>(tipo_).to_string();
     parent = NULL;
 
-    // std::cout << "contsruxtp";
-    // std::cout << ((tipo == 4) ? "4" : "no 4");
     this->l = (binary[0] == '0');
     this->d = (binary[1] == '0');
     this->r = (binary[2] == '0');
     this->u = (binary[3] == '0');
-    /*if (tipo_ == 6) {
-        std::cout << this->d << endl;
-        std::cout << this->l << endl;
-        std::cout << this->u << endl;
-        std::cout << this->r << endl;
-    }*/
 }
 void Celda::propagate(list<Celda*>* posibles, Celda* maze[WIDTH][HEIGHT]) {
     Celda** child;
-    /*  std::cout << endl << this->tipo << endl;
-      std::cout << this->d << endl;
-      std::cout << this->l << endl;
-      std::cout << this->u << endl;
-      std::cout << this->r << endl;
-      */
 
     if (this->u) {
         child = &maze[y - 1][x];
@@ -62,7 +48,10 @@ void Celda::registrar(Celda* child, list<Celda*>* posibles) {
         cout << "registo" << endl;
     } else if ((*child).isGoal()) {
         cout << "premio" << (*child).getX() << " " << (*child).getY() << endl;
-
+        int x = (*child).getX();
+        int y = (*child).getY();
+        Point* cords = new Point(x, y);
+        path.push_front(cords);
         (*child).setParent(this);
         found = true;
         this->searchBackwards(&path);
@@ -70,12 +59,12 @@ void Celda::registrar(Celda* child, list<Celda*>* posibles) {
 }
 void Celda::searchBackwards(list<Point*>* path) {
     Point* cords = new Point(x, y);
-    (*path).push_back(&*cords);
-    cout << "entro en " << x << y;
+    (*path).push_front(&*cords);
 
     if (this->parent != NULL) {
-        cout << "tengo padre" << endl;
+        this->setStatus(PATH);
         this->parent->searchBackwards(path);
+
     } else {
         cout << this->parent << "*" << endl;
     }
