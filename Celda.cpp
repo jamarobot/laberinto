@@ -1,10 +1,9 @@
 #include "Celda.h"
 #include <bitset>
 
-extern const int WIDTH;
-extern const int HEIGHT;
+
 extern bool found;
-extern list<Point*> path;
+
 
 Celda::Celda(int y_, int x_, int tipo_) {
     y = y_;
@@ -19,42 +18,43 @@ Celda::Celda(int y_, int x_, int tipo_) {
     this->r = (binary[2] == '0');
     this->u = (binary[3] == '0');
 }
-void Celda::propagate(list<Celda*>* posibles, Celda* maze[WIDTH][HEIGHT]) {
+void Celda::propagate(list<Celda*>* posibles, Celda* maze[cts::MAZE_WIDTH][cts::MAZE_HEIGHT], list<Point*>* path) {
     Celda** child;
-
+    std::cout<<&path<<endl;
     if (this->u) {
         child = &maze[y - 1][x];
-        registrar(*child, posibles);
+        registrar(*child, posibles,path);
     }
     if (this->d) {
         child = &maze[y + 1][x];
-        registrar(*child, posibles);
+        registrar(*child, posibles,path);
     }
     if (this->r) {
         child = &maze[y][x + 1];
-        registrar(*child, posibles);
+        registrar(*child, posibles,path);
     }
     if (this->l) {
         child = &maze[y][x - 1];
-        registrar(*child, posibles);
+        registrar(*child, posibles,path);
     }
 }
 
-void Celda::registrar(Celda* child, list<Celda*>* posibles) {
+void Celda::registrar(Celda* child, list<Celda*>* posibles,list<Point*>* path) {
+    
     if ((*child).isFree()) {
         (*posibles).push_back(child);
         (*child).setParent(this);
         (*child).setStatus(SEARCHED);
-        cout << "registo" << endl;
+        //cout << "registro" << endl;
     } else if ((*child).isGoal()) {
         cout << "premio" << (*child).getX() << " " << (*child).getY() << endl;
         int x = (*child).getX();
         int y = (*child).getY();
         Point* cords = new Point(x, y);
-        path.push_front(cords);
+        path->push_front(cords);
         (*child).setParent(this);
         found = true;
-        this->searchBackwards(&path);
+        this->searchBackwards(path);
     }
 }
 void Celda::searchBackwards(list<Point*>* path) {

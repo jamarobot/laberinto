@@ -4,8 +4,8 @@
 #define BEGIN 3
 #define GOAL 4
 #include <list>
-extern const int WIDTH;
-extern const int HEIGHT;
+//#include "Point.h"
+
 using namespace std;
 class Celda {
    private:
@@ -14,7 +14,7 @@ class Celda {
     bool u, d, l, r;
     Celda* parent;
     int tipo;
-    void registrar(Celda* child, list<Celda*>* posibles);
+    void registrar(Celda* child, list<Celda*>* posibles,list<Point*>* path);
     int status;
 
    public:
@@ -35,17 +35,8 @@ class Celda {
     void setTipo(int tipo_) { this->tipo = tipo_; }
     Celda(int y_, int x_, int tipo_);
     Celda();
-    void setParent(Celda* parent_) {
-        this->parent = parent_;
-        if (x == y && x == 4) {
-            cout << parent_ << " pongo padre en 44 " << parent_ << endl
-                 << this->getX() << "-" << this->getY() << endl;
-        }
-
-        //  cout << "estoy en " << x << " " << y << " " << this             << "
-        //  parent: " << this->parent << endl;
-    }
-    void propagate(list<Celda*>* posibles, Celda* maze[WIDTH][HEIGHT]);
+    void setParent(Celda* parent_) { this->parent = parent_; }
+    void propagate(list<Celda*>* posibles, Celda* maze[cts::MAZE_WIDTH][cts::MAZE_HEIGHT],list<Point*> *path);
     bool isFree() { return (this->status == FREE); };
     bool isGoal() { return (this->status == GOAL); }
     void searchBackwards(list<Point*>* path);
